@@ -5,6 +5,5 @@ import javax.inject.Inject
 
 class ProductUseCase @Inject constructor(private val productRepo: GetProductRepo) {
 
-
-
+    operator fun invoke() = productRepo.getProductRepo()
 }
