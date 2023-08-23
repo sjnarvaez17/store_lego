@@ -21,5 +21,5 @@ interface ProductApi {
     ): Call<ProductConteinerResponse>
 
     @GET("/detail?id={productId}")
-    fun fetchPokemonDetails(@Path("productId") id: String): Call<ProductDetailResponse>
+    fun fetchProductDetails(@Path("productId") id: String): Call<ProductDetailResponse>
 }
