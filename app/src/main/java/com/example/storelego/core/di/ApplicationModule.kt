@@ -1,5 +1,6 @@
 package com.example.storelego.core.di
 
+import android.content.Context
 import com.example.storelego.AndroidApplication
 import dagger.Provides
 import retrofit2.Retrofit
@@ -8,6 +9,9 @@ import javax.inject.Singleton
 
 class ApplicationModule(private val application: AndroidApplication) {
 
+    @Provides
+    @Singleton
+    fun provideApplicationContext(): Context = application
 
     @Provides
     @Singleton
