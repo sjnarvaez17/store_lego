@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-parcelize")
     id ("org.jetbrains.kotlin.kapt")
 }
 
@@ -43,6 +44,8 @@ dependencies {
 
     implementation ("com.google.dagger:dagger:2.44.2")
     kapt ("com.google.dagger:dagger-compiler:2.44.2")
+
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
 
     implementation(platform("com.google.firebase:firebase-bom:32.2.2"))
 
