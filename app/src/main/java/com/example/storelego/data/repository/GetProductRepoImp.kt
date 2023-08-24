@@ -9,7 +9,5 @@ import javax.inject.Inject
 class GetProductRepoImp @Inject constructor(private val getProductRemoteDataSource: ProductRemoteDataSource):
     GetProductRepo {
 
-    override fun getProductRepo(): Response<List<Product>> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getProductRepo(): List<Product> = getProductRemoteDataSource.fetchProductList()
 }
