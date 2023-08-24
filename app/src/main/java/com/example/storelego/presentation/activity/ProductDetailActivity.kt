@@ -29,7 +29,7 @@ class ProductDetailActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_product_detail)
+        appComponent.inject(this)
 
         binding = ActivityProductDetailBinding.inflate(layoutInflater)
         val view = binding.root
@@ -50,22 +50,26 @@ class ProductDetailActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        val productId = intent.getStringExtra(EXTRA_PRODUCT_ID).orEmpty()
+        val intProductId: Int = intent.getIntExtra(EXTRA_PRODUCT_ID, 0)
+        val productId = intProductId.toString()
 
         viewModel.getProductDetail(productId)
         showIndeterminateModalDialog()
     }
 
     private fun updateUI(productDetail: ProductDetail) {
+        hideIndeterminateModalDialog()
         title = productDetail.name
-        Glide.with(this@ProductDetailActivity)
-            .load(productDetail.image)
-            //.into(findViewById(R.id.productImage))
-            .into(binding.productImage)
 
-        binding.productName.text = productDetail.name
-        binding.productPrice.text = productDetail.unitPrice.toString()
-        binding.productStock.text = productDetail.stock.toString()
-        binding.productDescription.text = productDetail.description
+        with(binding) {
+            Glide.with(this@ProductDetailActivity)
+                .load(productDetail.image)
+                .into(productImage)
+
+            productName.text = productDetail.name
+            productPrice.text = productDetail.unitPrice.toString()
+            productStock.text = productDetail.stock.toString()
+            productDescription.text = productDetail.description
+        }
     }
 }
