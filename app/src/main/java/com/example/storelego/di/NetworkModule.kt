@@ -1,4 +1,4 @@
-package com.example.storelego.core.di
+package com.example.storelego.di
 
 import com.example.storelego.data.source.ProductApi
 import okhttp3.OkHttpClient

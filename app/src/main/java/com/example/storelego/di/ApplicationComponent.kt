@@ -1,4 +1,4 @@
-package com.example.storelego.core.di
+package com.example.storelego.di
 
 import com.example.storelego.AndroidApplication
 import dagger.Component
