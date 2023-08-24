@@ -1,11 +1,9 @@
 package com.example.storelego.presentation.activity
 
-import android.content.Intent
 import android.os.Bundle
 import com.example.storelego.databinding.ActivityProductBinding
 import com.example.storelego.domain.model.Product
 import com.example.storelego.presentation.BaseActivity
-import com.example.storelego.presentation.activity.ProductDetailActivity.Companion.KEY_ID
 import com.example.storelego.presentation.adapter.ProductAdapter
 import com.example.storelego.presentation.viewmodel.ProductListViewModel
 import javax.inject.Inject
@@ -51,9 +49,9 @@ class ProductListActivity : BaseActivity(), ProductAdapter.ItemAdapterListener {
     }
 
     override fun onProductClicked(product: Product) {
-        val intent = Intent(this, ProductDetailActivity::class.java)
-            .apply { putExtra(KEY_ID, product.id) }
-        startActivity(intent)
+        startActivity(
+            ProductDetailActivity.getIntent(this, product.id)
+        )
     }
 
     private fun initializeAdapter() {

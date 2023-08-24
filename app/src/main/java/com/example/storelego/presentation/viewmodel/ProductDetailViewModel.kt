@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.storelego.domain.model.Product
 import com.example.storelego.domain.model.ProductDetail
+import com.example.storelego.domain.use_case.Failure
 import com.example.storelego.domain.use_case.GetProductDetailUseCase
 import com.example.storelego.domain.use_case.Response
 import kotlinx.coroutines.CoroutineDispatcher
@@ -20,8 +20,8 @@ class ProductDetailViewModel @Inject constructor(
     private val _productDetail = MutableLiveData<ProductDetail>()
     val productDetail: LiveData<ProductDetail> get() = _productDetail
 
-    private val _error = MutableLiveData<Exception>()
-    val error: LiveData<Exception>
+    private val _error = MutableLiveData<Failure>()
+    val error: LiveData<Failure>
         get() = _error
 
     fun getProductDetail(id: String) {
@@ -33,15 +33,14 @@ class ProductDetailViewModel @Inject constructor(
                     productListUseCaseResult.success?.value?.let {
                         _productDetail.postValue(it)
                     } ?: run {
-                        _error.postValue(Exception("No data found"))
+                        _error.postValue(Failure(Exception("No data found")))
                     }
                 } else {
-                    _error.postValue(productListUseCaseResult.failure?.exception)
+                    _error.postValue(productListUseCaseResult.failure ?: Failure(Exception()))
                 }
             } catch (exception: Exception) {
-                _error.postValue(exception)
+                _error.postValue(Failure(exception))
             }
         }
-
     }
 }
