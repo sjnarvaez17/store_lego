@@ -37,5 +37,8 @@ class ProductAdapter(private var product: List<Product>, private val listener: P
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) =
         holder.bind(product[position], listener)
 
-
+    fun updateContent(newProductResponses: List<Product>) {
+        product = newProductResponses
+        notifyDataSetChanged()
+    }
 }

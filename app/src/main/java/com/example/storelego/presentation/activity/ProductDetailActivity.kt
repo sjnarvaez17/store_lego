@@ -5,13 +5,15 @@ import com.bumptech.glide.Glide
 import com.example.storelego.R
 import com.example.storelego.databinding.ActivityProductDetailBinding
 import com.example.storelego.domain.model.ProductDetail
-import com.example.storelego.domain.use_case.Failure
 import com.example.storelego.presentation.BaseActivity
-import com.example.storelego.presentation.activity.ProductListActivity.Companion.KEY_ID
 import com.example.storelego.presentation.viewmodel.ProductDetailViewModel
 import javax.inject.Inject
 
 class ProductDetailActivity: BaseActivity() {
+
+    companion object {
+        const val KEY_ID = "productId"
+    }
 
     @Inject
     lateinit var viewModel: ProductDetailViewModel
