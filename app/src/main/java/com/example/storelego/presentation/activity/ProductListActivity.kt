@@ -1,4 +1,9 @@
 package com.example.storelego.presentation.activity
 
-class ProductListActivity {
+import com.example.storelego.presentation.BaseActivity
+
+class ProductListActivity: BaseActivity() {
+
+
+
 }
