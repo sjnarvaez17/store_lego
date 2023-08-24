@@ -5,36 +5,35 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.storelego.domain.model.Product
-import com.example.storelego.domain.model.ProductDetail
-import com.example.storelego.domain.use_case.GetProductDetailUseCase
+import com.example.storelego.domain.use_case.GetProductListUseCase
 import com.example.storelego.domain.use_case.Response
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class ProductDetailViewModel @Inject constructor(
-    private val getProductDetailUseCase: GetProductDetailUseCase,
+class ProductListViewModel @Inject constructor(
+    private val productListUseCase: GetProductListUseCase,
     private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-    private val _productDetail = MutableLiveData<ProductDetail> ()
-
-    val productDetail: LiveData<ProductDetail> get() = _productDetail
+    private val _productList = MutableLiveData<List<Product>>()
+    val productList: LiveData<List<Product>>
+        get() = _productList
 
     private val _error = MutableLiveData<Exception>()
     val error: LiveData<Exception>
         get() = _error
 
-    fun getProductDetail(id: String){
+    fun getProductList() {
         viewModelScope.launch(dispatcher) {
             try {
-                val productListUseCaseResult: Response<ProductDetail?> = getProductDetailUseCase(id)
+                val productListUseCaseResult: Response<List<Product>> = productListUseCase()
 
                 if (productListUseCaseResult.isSuccess) {
                     productListUseCaseResult.success?.value?.let {
-                        _productDetail.postValue(it)
+                        _productList.postValue(it)
                     } ?: run {
-                        _productDetail.postValue(ProductDetail(-1, "", -1, -1, "", ""))
+                        _productList.postValue(emptyList())
                     }
                 } else {
                     _error.postValue(productListUseCaseResult.failure?.exception)
@@ -43,8 +42,5 @@ class ProductDetailViewModel @Inject constructor(
                 _error.postValue(exception)
             }
         }
-
     }
-
-
 }
