@@ -2,7 +2,6 @@ package com.example.storelego.presentation.activity
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.storelego.databinding.ActivityProductBinding
 import com.example.storelego.domain.model.Product
 import com.example.storelego.presentation.BaseActivity
@@ -11,11 +10,10 @@ import com.example.storelego.presentation.adapter.ProductAdapter
 import com.example.storelego.presentation.viewmodel.ProductListViewModel
 import javax.inject.Inject
 
-class ProductListActivity : BaseActivity(), ProductAdapter.ProductListener {
-
+class ProductListActivity : BaseActivity(), ProductAdapter.ItemAdapterListener {
 
     private lateinit var binding: ActivityProductBinding
-    private lateinit var productAdapter: ProductAdapter
+    private var productAdapter: ProductAdapter? = null
 
     @Inject
     lateinit var viewModel: ProductListViewModel
@@ -27,23 +25,12 @@ class ProductListActivity : BaseActivity(), ProductAdapter.ProductListener {
         binding = ActivityProductBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-
-        val adapterLayoutManager = LinearLayoutManager(this)
-        productAdapter = ProductAdapter(emptyList(), this)
-        binding.recycler.apply {
-            layoutManager = adapterLayoutManager
-            adapter = productAdapter
-        }
     }
 
     override fun onStart() {
         super.onStart()
         viewModel.productList.observe(this) {
-            // Hacer algo cuando se reciba una lista de productos
-            it.forEach { product ->
-                println(product.toString())
-
-            }
+            onContent(it)
         }
 
         viewModel.error.observe(this) {
@@ -53,18 +40,26 @@ class ProductListActivity : BaseActivity(), ProductAdapter.ProductListener {
 
     override fun onResume() {
         super.onResume()
+        initializeAdapter()
         viewModel.getProductList()
     }
 
-    override fun onProductClick(product: Product) {
+    private fun onContent(productList: List<Product>) {
+        initializeAdapter()
+        hideIndeterminateModalDialog()
+        productAdapter?.submitList(productList)
+    }
+
+    override fun onProductClicked(product: Product) {
         val intent = Intent(this, ProductDetailActivity::class.java)
             .apply { putExtra(KEY_ID, product.id) }
         startActivity(intent)
     }
 
-    private fun onResponse(productList: List<Product>) {
-        hideIndeterminateModalDialog()
-        productAdapter.updateContent(productList)
+    private fun initializeAdapter() {
+        if (productAdapter == null) {
+            productAdapter = ProductAdapter(this)
+            binding.recycler.adapter = productAdapter
+        }
     }
-
 }

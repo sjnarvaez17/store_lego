@@ -1,44 +1,51 @@
 package com.example.storelego.presentation.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.storelego.R
+import com.bumptech.glide.Glide
+import com.example.storelego.databinding.ProductAdapterBinding
 import com.example.storelego.domain.model.Product
 
-class ProductAdapter(private var product: List<Product>, private val listener: ProductListener):
-    RecyclerView.Adapter<ProductAdapter.ItemViewHolder>() {
+class ProductAdapter(
+    private val listener: ItemAdapterListener
+) : ListAdapter<Product, ProductAdapter.ItemViewHolder>(
+    DiffCallback()
+) {
 
-    interface ProductListener {
-        fun onProductClick(product: Product)
+    private class DiffCallback : DiffUtil.ItemCallback<Product>() {
+
+        override fun areItemsTheSame(oldItem: Product, newItem: Product) = oldItem.id == newItem.id
+
+        override fun areContentsTheSame(oldItem: Product, newItem: Product) = oldItem == newItem
     }
 
-    class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val adapterContainer =
-            itemView.findViewById<ConstraintLayout>(R.id.adapterContainer)
-        private val productName = itemView.findViewById<TextView>(R.id.productName)
+    interface ItemAdapterListener {
+        fun onProductClicked(product: Product)
+    }
 
-        fun bind(product: Product, listener: ProductListener) {
-            productName.text = product.name
-            adapterContainer.setOnClickListener { listener.onProductClick(product) }
+    class ItemViewHolder(private val binding: ProductAdapterBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(product: Product, listener: ItemAdapterListener) {
+            val context = binding.root.context
+
+            binding.productName.text = product.name
+
+            Glide.with(context)
+                .load(product.image)
+                .into(binding.productImage)
+
+            binding.root.setOnClickListener { listener.onProductClicked(product) }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)= ItemViewHolder (
-        LayoutInflater.from(parent.context).inflate(R.layout.product_adapter, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ItemViewHolder(
+        ProductAdapterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     )
 
-
-    override fun getItemCount(): Int = product.size
-
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) =
-        holder.bind(product[position], listener)
-
-    fun updateContent(newProductResponses: List<Product>) {
-        product = newProductResponses
-        notifyDataSetChanged()
-    }
+        holder.bind(getItem(position), listener)
 }
