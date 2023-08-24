@@ -17,15 +17,14 @@ class ProductDetailViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-    private val _productDetail = MutableLiveData<ProductDetail> ()
-
+    private val _productDetail = MutableLiveData<ProductDetail>()
     val productDetail: LiveData<ProductDetail> get() = _productDetail
 
     private val _error = MutableLiveData<Exception>()
     val error: LiveData<Exception>
         get() = _error
 
-    fun getProductDetail(id: String){
+    fun getProductDetail(id: String) {
         viewModelScope.launch(dispatcher) {
             try {
                 val productListUseCaseResult: Response<ProductDetail?> = getProductDetailUseCase(id)
@@ -34,7 +33,7 @@ class ProductDetailViewModel @Inject constructor(
                     productListUseCaseResult.success?.value?.let {
                         _productDetail.postValue(it)
                     } ?: run {
-                        _productDetail.postValue(ProductDetail(-1, "", -1, -1, "", ""))
+                        _error.postValue(Exception("No data found"))
                     }
                 } else {
                     _error.postValue(productListUseCaseResult.failure?.exception)
@@ -45,6 +44,4 @@ class ProductDetailViewModel @Inject constructor(
         }
 
     }
-
-
 }

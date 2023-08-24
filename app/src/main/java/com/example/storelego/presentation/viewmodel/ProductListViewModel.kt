@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.storelego.domain.model.Product
+import com.example.storelego.domain.use_case.Failure
 import com.example.storelego.domain.use_case.GetProductListUseCase
 import com.example.storelego.domain.use_case.Response
 import kotlinx.coroutines.CoroutineDispatcher
@@ -20,8 +21,8 @@ class ProductListViewModel @Inject constructor(
     val productList: LiveData<List<Product>>
         get() = _productList
 
-    private val _error = MutableLiveData<Exception>()
-    val error: LiveData<Exception>
+    private val _error = MutableLiveData<Failure>()
+    val error: LiveData<Failure>
         get() = _error
 
     fun getProductList() {
@@ -36,10 +37,12 @@ class ProductListViewModel @Inject constructor(
                         _productList.postValue(emptyList())
                     }
                 } else {
-                    _error.postValue(productListUseCaseResult.failure?.exception)
+                    _error.postValue(
+                        productListUseCaseResult.failure ?: Failure(Exception())
+                    )
                 }
             } catch (exception: Exception) {
-                _error.postValue(exception)
+                _error.postValue(Failure(exception))
             }
         }
     }

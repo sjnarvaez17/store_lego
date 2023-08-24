@@ -8,7 +8,7 @@ import com.example.storelego.R
 import com.example.storelego.di.ApplicationComponent
 import com.example.storelego.domain.use_case.Failure
 
-abstract class BaseActivity: AppCompatActivity() {
+abstract class BaseActivity : AppCompatActivity() {
 
     val appComponent: ApplicationComponent by lazy(mode = LazyThreadSafetyMode.NONE) {
         (application as AndroidApplication).appComponent
@@ -38,8 +38,11 @@ abstract class BaseActivity: AppCompatActivity() {
     fun onFailure(failure: Failure) {
         hideIndeterminateModalDialog()
 
+        val exception = failure.exception
+        exception.printStackTrace()
+
         Toast.makeText(
-            this, "Error obteniendo los detalles" ,
+            this, "Error getting details:\n\n${exception.message}",
             Toast.LENGTH_LONG
         ).show()
     }
